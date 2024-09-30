@@ -1,94 +1,74 @@
-<script lang="ts" setup>
-import { ref } from 'vue';
-import { QCarousel } from 'quasar';
-
-
-const slide = ref(1);
-const carousel = ref<InstanceType<typeof QCarousel> | null>(null);
-
-
-const slides = ref([
-  {
-    name: 1,
-    icon: 'style',
-    description: 'From funding clean energy projects to preserving wildlife habitats, your cryptocurrency donation supports innovative solutions to environmental challenges. By choosing crypto, you join a movement that embraces cutting-edge technology to tackle climate change and promote sustainability.',
-  },
-  {
-    name: 2,
-    icon: 'live_tv',
-    description: 'Cryptocurrency knows no borders. By donating in crypto, you can instantly fund critical environmental projects worldwide, from planting trees in the Amazon to saving endangered species in Africa. No banks, no delays—just immediate action for our planet',
-  },
-  {
-    name: 3,
-    icon: 'layers',
-    description: 'Make a lasting impact on the environment by donating in cryptocurrency. Fast, secure, and borderless, your contribution can help protect our planet from anywhere in the world. Support reforestation, ocean cleanup, wildlife protection, and other green initiatives while leveraging the power of blockchain technology.',
-  },
-  {
-    name: 4,
-    icon: 'terrain',
-    description: 'fourth slide',
-  },
-]);
-
-
-const goToPreviousSlide = () => {
-  carousel.value?.previous();
-};
-
-const goToNextSlide = () => {
-  carousel.value?.next();
-};
-
-</script>
-
 <template>
-  <q-carousel ref="carousel" v-model="slide" animated
-              class="q-ma-lg rounded-borders bg-amber-3"
-              swipeable
-              transition-next="jump-left" transition-prev="jump-right"
-  >
-
-    <q-carousel-slide v-for="(item,key) in slides" :key="key" :name="item.name"
-                      class="column no-wrap flex-center q-px-xl">
-      <q-icon :name="item.icon" color="primary" size="xl" />
-      <div class="q-mt-md text-center">
-        {{ item.description }}
-      </div>
-    </q-carousel-slide>
-
-    <template v-slot:control>
-      <q-carousel-control
-        class="q-gutter-xs no-margin click-area"
-        position="left"
-        @click="goToPreviousSlide"
-      >
-        <q-icon class="text-black" name="arrow_left" size="md" />
-
-      </q-carousel-control>
-
-      <q-carousel-control
-        class="q-gutter-xs no-margin click-area"
-        position="right"
-        @click="goToNextSlide"
-
-      >
-        <q-icon class="text-black" name="arrow_right" size="md" />
-
-      </q-carousel-control>
-    </template>
-
-  </q-carousel>
+  <div class="q-pa-md">
+    <q-carousel
+      v-model="slide"
+      transition-prev="scale"
+      transition-next="scale"
+      swipeable
+      animated
+      control-color="primary"
+      navigation
+      padding
+      arrows
+      height="400px"
+      class="bg-grey-1 shadow-2 rounded-borders"
+    >
+      <q-carousel-slide v-for="(slide, index) in slides" :key="index" :name="index" class="column no-wrap">
+        <div class="row fit justify-start items-center q-gutter-xs q-col-gutter no-wrap">
+          <q-img
+            class="rounded-borders col-6 full-height"
+            :src="slide.img"
+          />
+          <div class="col-6 text-center q-pa-md">
+            <h4 class="q-mt-md text-weight-bold">{{ slide.title }}</h4>
+            <p class="q-mt-md">{{ slide.desc }}</p>
+            <q-btn color="primary" :label="slide.button" class="q-mt-md" />
+          </div>
+        </div>
+      </q-carousel-slide>
+    </q-carousel>
+  </div>
 </template>
 
-<style scoped>
-.click-area {
-  display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center;
+<script lang="ts" setup>
+import { ref } from 'vue';
+
+const slide = ref(0);
+const slides = [
+  {
+    title: 'Protect Endangered Species',
+    desc: 'Your donation helps safeguard vulnerable species from extinction.',
+    img: 'https://cdn.pixabay.com/photo/2015/04/23/22/01/tree-736888_1280.jpg',
+    button: 'Donate Now'
+  },
+  {
+    title: 'Restore Habitats',
+    desc: 'Help us rebuild and protect critical habitats for wildlife.',
+    img: 'https://cdn.pixabay.com/photo/2015/04/23/22/01/tree-736888_1280.jpg',
+    button: 'Learn More'
+  },
+  {
+    title: 'Combat Climate Change',
+    desc: 'Support initiatives to reduce carbon emissions and fight global warming.',
+    img: 'https://cdn.pixabay.com/photo/2015/04/23/22/01/tree-736888_1280.jpg',
+    button: 'Get Involved'
+  }
+];
+</script>
+
+<style lang="scss" scoped>
+.q-carousel {
+  background: linear-gradient(145deg, #f3f3f3, #ffffff);
 }
 
-.click-area:hover {
-  backdrop-filter: brightness(80%);
-  cursor: pointer;
+.q-carousel__slide {
+  padding: 0;
+}
+
+.q-img {
+  transition: all 0.3s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
 }
 </style>

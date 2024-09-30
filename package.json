@@ -1,9 +1,8 @@
 {
   "name": "solpaw-nature-patrons",
   "version": "0.0.1",
-  "description": "A Quasar Project",
+  "description": "SolPaw Nature Patrons is an eco-friendly NFT platform on Solana, allowing donors to protect animals and the environment through exclusive NFTs.",
   "productName": "SolPaw Nature Patrons",
-  "author": "Melih Gündüz <melih.gunduz@hotmail.com>",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
@@ -12,7 +11,20 @@
     "dev": "quasar dev",
     "build": "quasar build"
   },
+  "contributors": [
+    {
+      "name": "Melih Gündüz",
+      "email": "melih.gunduz@hotmail.com"
+    },
+    {
+      "name": "Gorkem Sandikci",
+      "email": "gorkemsandikci@gmail.com"
+    }
+  ],
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
     "@quasar/extras": "^1.16.4",
     "@solana/wallet-adapter-wallets": "^0.19.32",
     "@solana/web3.js": "^1.95.3",
