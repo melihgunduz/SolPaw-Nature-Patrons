@@ -9,7 +9,7 @@ window.Buffer = Buffer; // Make Buffer available globally
 const walletOptions = {
   onError: (error: WalletError) => {
     console.error(error);
-    console.log('Wallet error ^^^^^^^^^');
+    console.log('Wallet error ^^^^^^^^^ you can configure this error from /boot/solana-connection.ts');
   },
 };
 

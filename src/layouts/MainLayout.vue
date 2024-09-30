@@ -1,13 +1,13 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header reveal>
       <q-toolbar>
 
         <q-toolbar-title>
-          Quasar App
+          SolPaw Nature Patrons
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <ConnectSolanaWallets />
       </q-toolbar>
     </q-header>
 
@@ -19,6 +19,9 @@
 </template>
 
 <script lang="ts" setup>
+
+import ConnectSolanaWallets from 'components/ConnectSolanaWallets.vue';
+
 
 defineOptions({
   name: 'MainLayout',
