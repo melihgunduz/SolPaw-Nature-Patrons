@@ -36,7 +36,7 @@ const makeDonation = async () => {
   if (!publicKey.value) {
     $q.notify({
       message: 'Invalid public key',
-      color: 'danger',
+      color: 'red',
       position: 'top',
       timeout: 3000,
     });
@@ -51,8 +51,18 @@ const makeDonation = async () => {
     }),
   );
 
-  const signature = await sendTransaction(transaction, connection);
-  console.log(signature);
+  try {
+    const signature = await sendTransaction(transaction, connection);
+    console.log(signature);
+  } catch (e) {
+    $q.notify({
+      message: 'An error occurred when transferring balance.',
+      color: 'red',
+      position: 'top',
+      timeout: 3000,
+    });
+    return;
+  }
 
 
   // Implement donation logic here
