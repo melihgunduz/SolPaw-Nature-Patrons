@@ -1,3 +1,18 @@
+<script lang="ts" setup>
+
+import ConnectSolanaWallets from 'components/ConnectSolanaWallets.vue';
+import { useQuasar } from 'quasar';
+
+const $q = useQuasar();
+
+
+defineOptions({
+  name: 'MainLayout',
+});
+
+</script>
+
+
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header reveal>
@@ -7,7 +22,7 @@
           SolPaw Nature Patrons
         </q-toolbar-title>
 
-        <ConnectSolanaWallets />
+        <ConnectSolanaWallets v-if="$q.platform.is.desktop" />
       </q-toolbar>
     </q-header>
 
@@ -18,13 +33,3 @@
   </q-layout>
 </template>
 
-<script lang="ts" setup>
-
-import ConnectSolanaWallets from 'components/ConnectSolanaWallets.vue';
-
-
-defineOptions({
-  name: 'MainLayout',
-});
-
-</script>
