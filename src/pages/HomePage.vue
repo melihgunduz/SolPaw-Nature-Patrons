@@ -63,10 +63,7 @@ onUnmounted(() => {
           <div class="col-12 col-md-8">
             <h1 class="text-h3 q-my-md ">Help Protect Our Planet and Wildlife!</h1>
             <p class="text-h6 q-mb-lg">Your donation makes a difference. Support our cause today.</p>
-            <q-btn :to="{name: 'Donate'}" color="secondary" icon-right="fa-solid fa-hand-holding-heart"
-                   label="Donate Now"
-                   no-caps
-                   size="lg" />
+
           </div>
           <q-img
             class="rotate-animation"
@@ -75,6 +72,7 @@ onUnmounted(() => {
             style="width: 200px; height: 200px" />
         </div>
       </div>
+
     </section>
 
     <InfoCarousel class="q-my-xl" />
