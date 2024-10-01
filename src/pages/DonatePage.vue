@@ -54,13 +54,22 @@ const makeDonation = async () => {
   try {
     const signature = await sendTransaction(transaction, connection);
     console.log(signature);
-  } catch (e) {
-    $q.notify({
-      message: 'An error occurred when transferring balance.',
-      color: 'red',
-      position: 'top',
-      timeout: 3000,
-    });
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      $q.notify({
+        message: 'An error occurred when transferring balance.',
+        color: 'red',
+        position: 'top',
+        timeout: 1000,
+      });
+    } else {
+      $q.notify({
+        message: 'Unknown error occurred.',
+        color: 'red',
+        position: 'top',
+        timeout: 3000,
+      });
+    }
     return;
   }
 
