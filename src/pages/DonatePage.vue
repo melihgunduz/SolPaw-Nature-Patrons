@@ -24,11 +24,13 @@
       </div>
 
       <!-- Donation Form and Stats -->
-      <div class="col-12 col-md-4">
-        <q-card class="donation-form q-mb-md">
+      <div class="col-12 col-md-4 column justify-between">
+        <q-card class="donation-for">
           <q-card-section>
             <div class="text-h6">Make a Donation</div>
             <q-input v-model="donationAmount" class="q-mt-md" label="Amount (SOL)" type="number" @focus="clearInput" />
+          </q-card-section>
+          <q-card-actions>
             <q-btn :disable="Number(donationAmount) <= 0" class="full-width q-mt-sm" color="primary"
                    label="Donate Now"
                    @click="makeDonation">
@@ -40,10 +42,12 @@
                 Enter valid amount to make donation.
               </q-tooltip>
             </q-btn>
-          </q-card-section>
+          </q-card-actions>
         </q-card>
 
-        <q-card class="donation-stats">
+        <!-- Donation stats -->
+
+        <q-card class="donation-stats q-mt-md">
           <q-card-section>
             <div class="text-h6">Donation Statistics</div>
             <q-list>
@@ -71,32 +75,33 @@
           </q-card-section>
         </q-card>
       </div>
-
-      <!-- Recent Donations -->
-      <div class="col-12">
-        <q-card class="recent-donations">
-          <q-card-section>
-            <div class="text-h6">Recent Donations</div>
-            <q-list>
-              <q-item v-for="donation in recentDonations" :key="donation.id">
-                <q-item-section avatar>
-                  <q-avatar color="primary" text-color="white">
-                    {{ donation.name.charAt(0) }}
-                  </q-avatar>
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label>{{ donation.name }}</q-item-label>
-                  <q-item-label caption>Donated {{ donation.amount }} SOL</q-item-label>
-                </q-item-section>
-                <q-item-section side>
-                  {{ donation.date }}
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card-section>
-        </q-card>
-      </div>
     </div>
+
+    <!-- Recent Donations -->
+    <div class="col-12 q-mt-lg">
+      <q-card class="recent-donations">
+        <q-card-section>
+          <div class="text-h6">Recent Donations</div>
+          <q-list>
+            <q-item v-for="donation in recentDonations" :key="donation.id">
+              <q-item-section avatar>
+                <q-avatar color="primary" text-color="white">
+                  {{ donation.name.charAt(0) }}
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>
+                <q-item-label>{{ donation.name }}</q-item-label>
+                <q-item-label caption>Donated {{ donation.amount }} SOL</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                {{ donation.date }}
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-card-section>
+      </q-card>
+    </div>
+
   </q-page>
 </template>
 
@@ -144,7 +149,7 @@ const makeDonation = () => {
 </script>
 
 <style lang="scss" scoped>
-.project-details, .donation-form, .donation-stats, .recent-donations {
+.project-details, .donation-form, .recent-donations {
   height: 100%;
 }
 </style>
