@@ -20,7 +20,11 @@ defineOptions({
 
         <q-toolbar-title>
           SolPaw Nature Patrons
+          <q-btn v-if="$route.name !== 'Home'" :ripple="false" :to="{name: 'Home'}" flat icon="home" />
         </q-toolbar-title>
+
+        <q-btn :icon="$q.dark.isActive ? 'fa-solid fa-sun' : 'fa-solid fa-moon'" flat push round
+               @click="$q.dark.toggle" />
 
         <ConnectSolanaWallets v-if="$q.platform.is.desktop" />
       </q-toolbar>
