@@ -1,3 +1,78 @@
+<script lang="ts" setup>
+import { ref } from 'vue';
+import { useWallet } from 'solana-wallets-vue';
+import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
+import { useQuasar } from 'quasar';
+
+
+const { connected } = useWallet();
+const $q = useQuasar();
+
+const donationAmount = ref('');
+const totalRaised = ref(1250);
+const numberOfDonors = ref(78);
+const goal = ref(2000);
+const progress = ref(totalRaised.value / goal.value);
+
+const recentDonations = ref([
+  { id: 1, name: 'Alice', amount: 5, date: '2023-06-01' },
+  { id: 2, name: 'Bob', amount: 10, date: '2023-05-31' },
+  { id: 3, name: 'Charlie', amount: 2, date: '2023-05-30' },
+  // Add more recent donations as needed
+]);
+
+
+const clearInput = () => {
+  if (donationAmount.value === '0') {
+    donationAmount.value = ''; // Clear the input if it's currently 0
+  }
+};
+
+
+const makeDonation = async () => {
+  const connection = new Connection(clusterApiUrl('devnet'));
+  const { publicKey, sendTransaction } = useWallet();
+
+  if (!publicKey.value) {
+    $q.notify({
+      message: 'Invalid public key',
+      color: 'danger',
+      position: 'top',
+      timeout: 3000,
+    });
+    return;
+  }
+
+  const transaction = new Transaction().add(
+    SystemProgram.transfer({
+      fromPubkey: publicKey.value,
+      toPubkey: new PublicKey('5u2uYbSDCFW5U3X1mNZGVRMzRD3jK7t6VQGqfvSxE2nq'),
+      lamports: Number(donationAmount.value) * LAMPORTS_PER_SOL,
+    }),
+  );
+
+  const signature = await sendTransaction(transaction, connection);
+  console.log(signature);
+
+
+  // Implement donation logic here
+  console.log(`Donation of ${donationAmount.value} SOL made`);
+  // Update stats and recent donations
+  totalRaised.value += Number(donationAmount.value);
+  numberOfDonors.value += 1;
+  progress.value = totalRaised.value / goal.value;
+  // Add new donation to recent donations
+  recentDonations.value.unshift({
+    id: recentDonations.value.length + 1,
+    name: 'Anonymous',
+    amount: Number(donationAmount.value),
+    date: new Date().toISOString().split('T')[0],
+  });
+  // Reset donation amount
+  donationAmount.value = '';
+};
+</script>
+
 <template>
   <q-page class="q-pa-md">
     <div class="row q-col-gutter-md">
@@ -10,7 +85,7 @@
             </div>
           </q-img>
           <q-card-section>
-            <div class="text-h5 q-mb-md">Help Protect Our Rainforests</div>
+            <div class="text-h5">Help Protect Our Rainforests</div>
             <p>Rainforests are crucial for maintaining Earth's biodiversity and regulating our climate. Your donation
               will help us protect these vital ecosystems from deforestation and support local communities.</p>
             <div class="text-h6 q-mt-md">Project Goals:</div>
@@ -31,7 +106,7 @@
             <q-input v-model="donationAmount" class="q-mt-md" label="Amount (SOL)" type="number" @focus="clearInput" />
           </q-card-section>
           <q-card-actions>
-            <q-btn :disable="Number(donationAmount) <= 0" class="full-width q-mt-sm" color="primary"
+            <q-btn :disable="Number(donationAmount) <= 0 || !connected" class="full-width q-mt-sm" color="primary"
                    label="Donate Now"
                    @click="makeDonation">
               <q-tooltip v-if="Number(donationAmount) <= 0"
@@ -40,6 +115,13 @@
                          transition-show="flip-right"
               >
                 Enter valid amount to make donation.
+              </q-tooltip>
+              <q-tooltip v-else-if="!connected"
+                         class="bg-purple text-body2"
+                         transition-hide="flip-left"
+                         transition-show="flip-right"
+              >
+                Please connect your wallet first.
               </q-tooltip>
             </q-btn>
           </q-card-actions>
@@ -104,49 +186,6 @@
 
   </q-page>
 </template>
-
-<script lang="ts" setup>
-import { ref } from 'vue';
-
-const donationAmount = ref('');
-const totalRaised = ref(1250);
-const numberOfDonors = ref(78);
-const goal = ref(2000);
-const progress = ref(totalRaised.value / goal.value);
-
-const recentDonations = ref([
-  { id: 1, name: 'Alice', amount: 5, date: '2023-06-01' },
-  { id: 2, name: 'Bob', amount: 10, date: '2023-05-31' },
-  { id: 3, name: 'Charlie', amount: 2, date: '2023-05-30' },
-  // Add more recent donations as needed
-]);
-
-
-const clearInput = () => {
-  if (donationAmount.value === '0') {
-    donationAmount.value = ''; // Clear the input if it's currently 0
-  }
-};
-
-
-const makeDonation = () => {
-  // Implement donation logic here
-  console.log(`Donation of ${donationAmount.value} SOL made`);
-  // Update stats and recent donations
-  totalRaised.value += Number(donationAmount.value);
-  numberOfDonors.value += 1;
-  progress.value = totalRaised.value / goal.value;
-  // Add new donation to recent donations
-  recentDonations.value.unshift({
-    id: recentDonations.value.length + 1,
-    name: 'Anonymous',
-    amount: Number(donationAmount.value),
-    date: new Date().toISOString().split('T')[0],
-  });
-  // Reset donation amount
-  donationAmount.value = '';
-};
-</script>
 
 <style lang="scss" scoped>
 .project-details, .donation-form, .recent-donations {

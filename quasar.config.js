@@ -21,7 +21,7 @@ module.exports = configure(function(/* ctx */) {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: ['solana-connection',
-    'fontawesome'
+      'fontawesome',
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -41,7 +41,7 @@ module.exports = configure(function(/* ctx */) {
 
       'roboto-font', // optional, you are not bound to it
       'material-icons', // optional, you are not bound to it
-      'fontawesome-v6'
+      'fontawesome-v6',
     ],
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#build
@@ -103,7 +103,7 @@ module.exports = configure(function(/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: ['Notify'],
       iconSet: 'fontawesome-v6',
     },
 

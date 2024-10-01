@@ -55,12 +55,6 @@ const slides = [
 </script>
 
 <style lang="scss" scoped>
-
-
-.q-carousel__slide {
-  padding: 0;
-}
-
 .q-img {
   transition: all 0.3s ease;
 
