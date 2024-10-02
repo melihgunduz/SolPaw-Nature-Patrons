@@ -4,6 +4,7 @@
   "description": "SolPaw Nature Patrons is an eco-friendly NFT platform on Solana, allowing donors to protect animals and the environment through exclusive NFTs.",
   "productName": "SolPaw Nature Patrons",
   "private": true,
+  "type": "module",
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
@@ -29,6 +30,10 @@
     "@solana/wallet-adapter-wallets": "^0.19.32",
     "@solana/web3.js": "^1.95.3",
     "buffer": "^6.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "mongoose": "^8.7.0",
     "pinia": "^2.0.11",
     "quasar": "^2.16.0",
     "solana-wallets-vue": "^0.6.1",

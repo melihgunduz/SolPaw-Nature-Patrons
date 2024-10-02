@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useWallet } from 'solana-wallets-vue';
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { useQuasar } from 'quasar';
@@ -12,12 +12,37 @@ const totalRaised = ref(1250);
 const numberOfDonors = ref(78);
 const goal = ref(2000);
 const progress = ref(totalRaised.value / goal.value);
+const recentDonations = ref([]);
 
-const recentDonations = ref([
-  { id: 1, name: 'Alice', amount: 5, date: '2023-06-01' },
-  { id: 2, name: 'Bob', amount: 10, date: '2023-05-31' },
-  { id: 3, name: 'Charlie', amount: 2, date: '2023-05-30' },
-]);
+const fetchRecentDonations = async () => {
+  try {
+    const response = await fetch('http://localhost:5001/api/donations/recent');
+    if (!response.ok) {
+      throw new Error('Failed to fetch donations');
+    }
+    const donations = await response.json();
+
+    recentDonations.value = donations.map(donation => ({
+      id: donation._id,
+      name: donation.donorName || 'Anonymous',
+      amount: donation.amount,
+      date: new Date().toISOString().split('T')[0],
+      nftGranted: donation.nftGranted
+    }));
+  } catch (error) {
+    console.error('Error fetching recent donations:', error);
+    $q.notify({
+      message: 'Error fetching recent donations',
+      color: 'red',
+      position: 'top',
+      timeout: 3000,
+    });
+  }
+};
+
+onMounted(() => {
+  fetchRecentDonations();
+});
 
 const clearInput = () => {
   if (donationAmount.value === '0') {
@@ -57,11 +82,14 @@ const makeDonation = async () => {
   totalRaised.value += Number(donationAmount.value);
   numberOfDonors.value += 1;
   progress.value = totalRaised.value / goal.value;
+
+  const name = publicKey.value ? publicKey.value.toString() : 'Anonymous';
   recentDonations.value.unshift({
-    id: recentDonations.value.length + 1,
-    name: 'Anonymous',
+    id: new Date().getTime().toString(),
+    name: name,
     amount: Number(donationAmount.value),
     date: new Date().toISOString().split('T')[0],
+    nftGranted: false,
   });
   donationAmount.value = '';
 };
@@ -171,11 +199,13 @@ const makeDonation = async () => {
               <q-item-section>
                 <q-item-label>{{ donation.name }}</q-item-label>
                 <q-item-label caption>Donated {{ donation.amount }} SOL</q-item-label>
+                <q-item-label caption>NFT Granted: {{ donation.nftGranted ? 'Yes' : 'No' }}</q-item-label>
               </q-item-section>
               <q-item-section side>
                 {{ donation.date }}
               </q-item-section>
             </q-item>
+
           </q-list>
         </q-card-section>
       </q-card>
