@@ -12,7 +12,7 @@ window.Buffer = Buffer; // Make Buffer available globally
 
 const walletOptions: WalletStoreProps = {
   onError: (error: WalletError) => {
-    if (error.message.includes('reject')) {
+    if (error.message.toLowerCase().includes('reject')) {
       Notify.create({
         message: 'User rejected the request',
         color: 'warning',
@@ -21,7 +21,17 @@ const walletOptions: WalletStoreProps = {
       });
       return;
     }
-    console.error(error);
+
+    if (error.name.toLowerCase().includes('sendtransaction')) {
+      Notify.create({
+        message: 'Transaction error.',
+        color: 'red',
+        position: 'top',
+        timeout: 3000,
+      });
+      return;
+    }
+    // console.error(error);
     console.log('Wallet error ^^^^^^^^^ you can configure this error from /boot/solana-connection.ts');
   },
   cluster: 'devnet',

@@ -57,7 +57,7 @@ onUnmounted(() => {
 <template>
   <q-page>
     <!-- Hero Banner -->
-    <section class="hero-banner bg-primary q-pb-sm">
+    <section class="hero-banner bg-transparent q-pb-sm">
       <div class="container">
         <div class="row text-center items-center justify-around ">
           <div class="col-12 col-md-8">
@@ -67,7 +67,6 @@ onUnmounted(() => {
           </div>
           <q-img
             class="rotate-animation"
-            sizes="(max-width: 400px) 400w"
             src="https://cdn.pixabay.com/photo/2016/04/02/21/01/earth-1303628_1280.png"
             style="width: 200px; height: 200px" />
         </div>
@@ -75,7 +74,7 @@ onUnmounted(() => {
 
     </section>
 
-    <InfoCarousel class="q-my-xl" />
+    <InfoCarousel />
 
     <!-- Donation Section -->
     <section class="donation-section q-pa-xl">

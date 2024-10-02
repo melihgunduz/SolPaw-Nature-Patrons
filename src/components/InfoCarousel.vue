@@ -4,25 +4,20 @@
     :dark="$q.dark.isActive"
     animated
     arrows
-    class="shadow-4 rounded-borders q-pa-md q-ma-md"
-    control-color="primary"
+    class="shadow-4 rounded-borders q-ma-md"
+    control-color="accent"
+    control-type="regular"
+    height="500px"
     padding
     swipeable
     transition-next="scale"
     transition-prev="scale"
   >
-    <q-carousel-slide v-for="(slide, index) in slides" :key="index" :name="index" class="column no-wrap">
-      <div :class="[$q.screen.gt.xs ? 'row fit justify-start items-center q-gutter-xs q-col-gutter no-wrap': '']">
-        <q-img
-          :class="[$q.screen.gt.xs ? 'full-height': '', 'rounded-borders col-6']"
-          :src="slide.img"
-        />
-        <div class="col-12 col-sm-6 text-center q-pa-md">
-          <div v-if="$q.screen.gt.xs" class="q-mt-md text-h4 text-weight-bold">{{ slide.title }}</div>
-          <div v-else class="text-bold">{{ slide.title }}</div>
-          <p class="q-mt-md">{{ slide.desc }}</p>
-          <q-btn :label="slide.button" color="primary" />
-        </div>
+    <q-carousel-slide v-for="(slide,index) in slides" :key="index" :img-src="slide.img" :name="index"
+                      class="text-white">
+      <div :class="$q.screen.gt.sm ?'absolute-bottom q-ml-xl q-mb-xl' : 'absolute-bottom-left q-ma-sm'">
+        <div class="text-h2 q-mb-lg">{{ slide.title }}</div>
+        <div class="text-subtitle1">{{ slide.desc }}</div>
       </div>
     </q-carousel-slide>
   </q-carousel>

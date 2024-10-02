@@ -5,12 +5,12 @@ import { useWallet, WalletMultiButton } from 'solana-wallets-vue';
 import { watch } from 'vue';
 import { useQuasar } from 'quasar';
 
-const { connected, ready, cluster } = useWallet();
+const { connected, ready } = useWallet();
 const $q = useQuasar();
 
 
 watch(connected, () => {
-  console.log(cluster.value);
+
   if (!ready.value) {
     $q.notify({
       message: 'There is no connected account.',

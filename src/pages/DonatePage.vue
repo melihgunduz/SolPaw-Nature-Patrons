@@ -55,21 +55,6 @@ const makeDonation = async () => {
     const signature = await sendTransaction(transaction, connection);
     console.log(signature);
   } catch (e: unknown) {
-    if (e instanceof Error) {
-      $q.notify({
-        message: 'An error occurred when transferring balance.',
-        color: 'red',
-        position: 'top',
-        timeout: 1000,
-      });
-    } else {
-      $q.notify({
-        message: 'Unknown error occurred.',
-        color: 'red',
-        position: 'top',
-        timeout: 3000,
-      });
-    }
     return;
   }
 
@@ -135,6 +120,13 @@ const makeDonation = async () => {
               >
                 Enter valid amount to make donation.
               </q-tooltip>
+              <q-tooltip v-else-if="!$q.platform.is.desktop"
+                         class="bg-purple text-body2"
+                         transition-hide="flip-left"
+                         transition-show="flip-right"
+              >
+                Please make donation on desktop for better experience. For now...
+              </q-tooltip>
               <q-tooltip v-else-if="!connected"
                          class="bg-purple text-body2"
                          transition-hide="flip-left"
@@ -179,7 +171,7 @@ const makeDonation = async () => {
     </div>
 
     <!-- Recent Donations -->
-    <div class="col-12 q-mt-lg">
+    <div class="col-12 q-mt-md">
       <q-card class="recent-donations">
         <q-card-section>
           <div class="text-h6">Recent Donations</div>
