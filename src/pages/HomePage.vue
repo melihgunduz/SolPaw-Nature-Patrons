@@ -56,22 +56,14 @@ onUnmounted(() => {
 
 <template>
   <q-page>
-    <!-- Hero Banner -->
-    <section class="hero-banner bg-transparent q-pb-sm">
-      <div class="container">
-        <div class="row text-center items-center justify-around ">
-          <div class="col-12 col-md-8">
-            <h1 class="text-h3 q-my-md ">Help Protect Our Planet and Wildlife!</h1>
-            <p class="text-h6 q-mb-lg">Your donation makes a difference. Support our cause today.</p>
-
-          </div>
-          <q-img
-            class="rotate-animation"
-            src="https://cdn.pixabay.com/photo/2016/04/02/21/01/earth-1303628_1280.png"
-            style="width: 200px; height: 200px" />
+    <section class="hero-banner">
+      <div class="hero-image">
+        <div class="hero-content">
+          <h1 class="text-h2 text-white q-mb-md">Help Protect Our Planet and Wildlife!</h1>
+          <p class="text-h5 text-white q-mb-lg">Your donation makes a difference. Support our cause today.</p>
+          <q-btn color="white" text-color="primary" label="Donate Now" size="lg" to="/donate" />
         </div>
       </div>
-
     </section>
 
     <InfoCarousel />
@@ -145,7 +137,39 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .hero-banner {
-  background: linear-gradient(45deg, #1976D2, #0D47A1);
+  position: relative;
+  height: 60vh; // Ekranın %60'ı kadar yükseklik
+  overflow: hidden;
+}
+
+.hero-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/images/header-hero.jpg');
+  background-size: cover;
+  background-position: center;
+  animation: breathe-out 10s;
+}
+
+.hero-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 1;
+}
+
+@keyframes breathe-out {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
 .container {
@@ -155,19 +179,6 @@ onUnmounted(() => {
 
 .full-height {
   height: 100%;
-}
-
-.rotate-animation {
-  animation: rotate 20s linear infinite;
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .animate-pop {
@@ -184,5 +195,4 @@ onUnmounted(() => {
     transform: scale(1);
   }
 }
-
 </style>

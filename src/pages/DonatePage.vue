@@ -4,7 +4,6 @@ import { useWallet } from 'solana-wallets-vue';
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { useQuasar } from 'quasar';
 
-
 const { connected } = useWallet();
 const $q = useQuasar();
 
@@ -18,16 +17,13 @@ const recentDonations = ref([
   { id: 1, name: 'Alice', amount: 5, date: '2023-06-01' },
   { id: 2, name: 'Bob', amount: 10, date: '2023-05-31' },
   { id: 3, name: 'Charlie', amount: 2, date: '2023-05-30' },
-  // Add more recent donations as needed
 ]);
-
 
 const clearInput = () => {
   if (donationAmount.value === '0') {
-    donationAmount.value = ''; // Clear the input if it's currently 0
+    donationAmount.value = '';
   }
 };
-
 
 const makeDonation = async () => {
   const connection = new Connection(clusterApiUrl('devnet'));
@@ -58,21 +54,15 @@ const makeDonation = async () => {
     return;
   }
 
-
-  // Implement donation logic here
-  console.log(`Donation of ${donationAmount.value} SOL made`);
-  // Update stats and recent donations
   totalRaised.value += Number(donationAmount.value);
   numberOfDonors.value += 1;
   progress.value = totalRaised.value / goal.value;
-  // Add new donation to recent donations
   recentDonations.value.unshift({
     id: recentDonations.value.length + 1,
     name: 'Anonymous',
     amount: Number(donationAmount.value),
     date: new Date().toISOString().split('T')[0],
   });
-  // Reset donation amount
   donationAmount.value = '';
 };
 </script>
@@ -80,7 +70,6 @@ const makeDonation = async () => {
 <template>
   <q-page class="q-pa-md">
     <div class="row q-col-gutter-md">
-      <!-- Project Details -->
       <div class="col-12 col-md-8">
         <q-card class="project-details">
           <q-img height="300px" src="https://cdn.pixabay.com/photo/2015/04/23/22/01/tree-736888_1280.jpg">
@@ -102,7 +91,6 @@ const makeDonation = async () => {
         </q-card>
       </div>
 
-      <!-- Donation Form and Stats -->
       <div class="col-12 col-md-4 column justify-between">
         <q-card class="donation-for">
           <q-card-section>
@@ -137,8 +125,6 @@ const makeDonation = async () => {
             </q-btn>
           </q-card-actions>
         </q-card>
-
-        <!-- Donation stats -->
 
         <q-card class="donation-stats q-mt-md">
           <q-card-section>
@@ -194,7 +180,6 @@ const makeDonation = async () => {
         </q-card-section>
       </q-card>
     </div>
-
   </q-page>
 </template>
 
