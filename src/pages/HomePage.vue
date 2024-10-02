@@ -56,48 +56,26 @@ onUnmounted(() => {
 
 <template>
   <q-page>
-    <section class="hero-banner">
+    <section class="hero-banner q-ma-md rounded-borders">
       <div class="hero-image">
         <div class="hero-content">
           <h1 class="text-h2 text-white q-mb-md">Help Protect Our Planet and Wildlife!</h1>
           <p class="text-h5 text-white q-mb-lg">Your donation makes a difference. Support our cause today.</p>
-          <q-btn color="white" text-color="primary" label="Donate Now" size="lg" to="/donate" />
+          <q-btn :size="$q.screen.lt.md ? 'md' : 'lg'" :to="{name:'Donate'}" color="primary"
+                 icon-right="fa-solid fa-coins"
+                 label="Donate Now"
+                 no-caps />
         </div>
       </div>
     </section>
+    <div class="text-h4 text-center">Our Initiatives</div>
 
-    <InfoCarousel />
-
-    <!-- Donation Section -->
-    <section class="donation-section q-pa-xl">
-      <div class="container">
-        <div class="row justify-center">
-          <div class="col-12 col-md-8 text-center">
-            <q-img
-              class="rounded-borders q-mb-lg"
-              src="https://cdn.pixabay.com/photo/2015/04/23/22/01/tree-736888_1280.jpg"
-              style="height: 300px; max-width: 500px"
-            >
-              <div class="absolute-full text-subtitle1 flex flex-center" style="background-color: rgba(0, 0, 0, 0.3);">
-                Every donation counts!
-              </div>
-            </q-img>
-            <h2 class="text-h4 text-primary q-mb-md">Make a Donation</h2>
-            <p class="q-mb-lg text-body1">Every donation counts towards a better future for our environment and its
-              wildlife.</p>
-            <q-btn :to="{name:'Donate'}" class="q-px-xl" color="primary" icon-right="fa-solid fa-coins"
-                   label="Donate Now"
-                   no-caps
-                   size="lg" />
-          </div>
-        </div>
-      </div>
-    </section>
+    <InfoCarousel class="q-ma-md" />
 
     <!-- Item Cards Section -->
-    <section class="cards-section q-pa-xl ">
+    <section class="q-ma-md ">
       <div class="container">
-        <h2 class="text-h4 text-center q-mb-lg">Our Initiatives</h2>
+        <div id="our-initatives" class="text-h4 text-center q-mb-md">Our Initiatives</div>
         <div class="row q-col-gutter-lg">
           <div v-for="card in cards" :key="card.id" class="col-12 col-md-4">
             <q-card v-scroll-fire="handleScrollFire" class="full-height">
