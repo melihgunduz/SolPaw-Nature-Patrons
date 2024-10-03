@@ -47,6 +47,7 @@ const clearInput = () => {
 const fetchRecentDonations = async () => {
   try {
     const response = await fetch('http://localhost:5001/api/donations/recent');
+
     if (!response.ok) {
       new Error('Failed to fetch donations');
     }
@@ -70,6 +71,43 @@ const fetchRecentDonations = async () => {
   }
 };
 
+const postPaymentToAPI = async (amount: number, donorName: string) => {
+  try {
+    const response = await fetch('http://localhost:5001/api/payments/donate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        donationProjectId: '66fe53be97c27111cd6df104',
+        donorName: donorName,
+        amount: amount,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to send payment');
+    }
+
+    const result = await response.json();
+    console.log('Payment posted successfully:', result);
+
+    $q.notify({
+      message: 'Payment recorded successfully!',
+      color: 'green',
+      position: 'top',
+      timeout: 3000,
+    });
+  } catch (error) {
+    console.error('Error posting payment:', error);
+    $q.notify({
+      message: 'Error recording payment',
+      color: 'red',
+      position: 'top',
+      timeout: 3000,
+    });
+  }
+};
 
 const makeDonation = async () => {
   const connection = new Connection(clusterApiUrl('devnet'));
@@ -95,8 +133,9 @@ const makeDonation = async () => {
 
   try {
     const signature = await sendTransaction(transaction, connection);
-    console.log(signature);
+    console.log('Transaction signature:', signature);
   } catch (e: unknown) {
+    console.error('Error during transaction:', e);
     return;
   }
 
@@ -112,6 +151,14 @@ const makeDonation = async () => {
     date: new Date().toISOString().split('T')[0],
     nftGranted: false,
   });
+
+  // Check if donation is 0.01 SOL or more
+  if (Number(donationAmount.value) >= 0.01) {
+
+    console.log(donationAmount.value, Number(donationAmount.value), name);
+    await postPaymentToAPI(Number(donationAmount.value), name);
+  }
+
   donationAmount.value = '';
 };
 
