@@ -24,7 +24,7 @@ app.post('/donate', async (req, res) => {
     const transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: donor,
-        toPubkey: new PublicKey('5u2uYbSDCFW5U3X1mNZGVRMzRD3jK7t6VQGqfvSxE2nq'),
+        toPubkey: new PublicKey(process.env.TO_PUBLIC_KEY),
         lamports: amount * LAMPORTS_PER_SOL,
       })
     );
