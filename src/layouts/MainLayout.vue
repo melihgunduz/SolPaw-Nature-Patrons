@@ -19,23 +19,47 @@ defineOptions({
     <q-header :class=" !$q.dark.isActive ? 'gradient-header-light': 'gradient-header-dark'" reveal>
       <q-toolbar>
         <q-toolbar-title>
-          <router-link :to="{ name: 'Home' }">
-            <img :src="logoSrc" alt="Solana Paw Nature Patron Logo" class="q-mt-md" height="60" />
-          </router-link>
+          <div>
+            <router-link :to="{ name: 'Home' }">
+              <img :src="logoSrc" alt="Solana Paw Nature Patron Logo" class="q-mt-md" height="60" />
+            </router-link>
+          </div>
         </q-toolbar-title>
         <div class="q-mr-sm">
-          <q-btn v-if="$route.name !== 'Home'" :ripple="false" :to="{name: 'Home'}" dense flat icon="home"
-                 push />
+          <q-btn-dropdown color="primary" dropdown-icon="change_history" label="Menu" no-caps outline rounded size="md">
+            <q-list>
+              <q-item v-if="$q.platform.is.desktop && $q.screen.lt.sm">
+                <q-item-section class="items-center">
+                  <ConnectSolanaWallets v-if="$q.platform.is.desktop" />
+                </q-item-section>
+              </q-item>
 
-          <q-btn :color="$q.dark.isActive ? 'yellow-6' :'blue-6' "
-                 :icon="$q.dark.isActive ? 'fa-solid fa-sun' : 'fa-solid fa-moon'" class="q-pa-sm"
-                 dense
-                 flat
-                 push
-                 @click="$q.dark.toggle" />
+              <q-item v-if="$route.name !== 'Home'" v-close-popup :to="{name: 'Home'}" clickable>
+                <q-item-section class="items-center">
+                  <q-icon name="home" size="sm" />
+                </q-item-section>
+              </q-item>
+
+              <q-item v-if="$route.name !== 'Profile'" v-close-popup :to="{name: 'Profile'}" clickable>
+                <q-item-section class="items-center">
+                  <q-icon name="person" size="sm" />
+                </q-item-section>
+              </q-item>
+
+              <q-item v-close-popup clickable
+                      @click="$q.dark.toggle">
+                <q-item-section class="items-center">
+                  <q-icon :color="$q.dark.isActive ? 'yellow-6' :'blue-6' "
+                          :name="$q.dark.isActive ? 'fa-solid fa-sun' : 'fa-solid fa-moon'" size="sm" />
+                </q-item-section>
+              </q-item>
+
+
+            </q-list>
+          </q-btn-dropdown>
         </div>
 
-        <ConnectSolanaWallets v-if="$q.platform.is.desktop" />
+        <ConnectSolanaWallets v-if="$q.platform.is.desktop && !$q.screen.lt.sm" />
       </q-toolbar>
     </q-header>
 
