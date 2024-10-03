@@ -1,8 +1,26 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useWallet } from 'solana-wallets-vue';
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { useQuasar } from 'quasar';
+
+// Used for client side donor type
+type RecentDonation = {
+  id: string,
+  name: string,
+  amount: number,
+  date: string,
+  nftGranted: boolean,
+}
+
+// Used for server side donor type
+type DbDonation = {
+  _id: string,
+  donorName: string,
+  amount: number,
+  date: string,
+  nftGranted: boolean,
+}
 
 const { connected } = useWallet();
 const $q = useQuasar();
@@ -12,22 +30,34 @@ const totalRaised = ref(1250);
 const numberOfDonors = ref(78);
 const goal = ref(2000);
 const progress = ref(totalRaised.value / goal.value);
-const recentDonations = ref([]);
+const recentDonations = ref<RecentDonation[]>([]);
+
+
+onMounted(() => {
+  fetchRecentDonations();
+});
+
+const clearInput = () => {
+  if (donationAmount.value === '0') {
+    donationAmount.value = '';
+  }
+};
+
 
 const fetchRecentDonations = async () => {
   try {
     const response = await fetch('http://localhost:5001/api/donations/recent');
     if (!response.ok) {
-      throw new Error('Failed to fetch donations');
+      new Error('Failed to fetch donations');
     }
-    const donations = await response.json();
+    const donations: DbDonation[] = await response.json();
 
-    recentDonations.value = donations.map(donation => ({
+    recentDonations.value = donations.map((donation: DbDonation) => ({
       id: donation._id,
       name: donation.donorName || 'Anonymous',
       amount: donation.amount,
       date: new Date().toISOString().split('T')[0],
-      nftGranted: donation.nftGranted
+      nftGranted: donation.nftGranted,
     }));
   } catch (error) {
     console.error('Error fetching recent donations:', error);
@@ -40,15 +70,6 @@ const fetchRecentDonations = async () => {
   }
 };
 
-onMounted(() => {
-  fetchRecentDonations();
-});
-
-const clearInput = () => {
-  if (donationAmount.value === '0') {
-    donationAmount.value = '';
-  }
-};
 
 const makeDonation = async () => {
   const connection = new Connection(clusterApiUrl('devnet'));
@@ -93,6 +114,8 @@ const makeDonation = async () => {
   });
   donationAmount.value = '';
 };
+
+
 </script>
 
 <template>

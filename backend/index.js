@@ -10,9 +10,9 @@ const connection = new Connection('https://api.devnet.solana.com');
 const metaplex = Metaplex.make(connection).use(keypairIdentity(/*Keypair'iniz buraya*/));
 
 const nftMetadata = {
-  name: "Donation NFT",
-  symbol: "DONATE",
-  uri: "https://example.com/nft-metadata",
+  name: 'Donation NFT',
+  symbol: 'DONATE',
+  uri: 'https://example.com/nft-metadata',
   sellerFeeBasisPoints: 500,
 };
 
@@ -26,7 +26,7 @@ app.post('/donate', async (req, res) => {
         fromPubkey: donor,
         toPubkey: new PublicKey(process.env.TO_PUBLIC_KEY),
         lamports: amount * LAMPORTS_PER_SOL,
-      })
+      }),
     );
 
     const signature = await connection.sendTransaction(transaction, [/* Cüzdan Keypair */]);
@@ -36,7 +36,7 @@ app.post('/donate', async (req, res) => {
       .nfts()
       .create({
         ...nftMetadata,
-        collection: new PublicKey("YOUR_COLLECTION_ADDRESS"),
+        collection: new PublicKey('YOUR_COLLECTION_ADDRESS'),
         owner: donor,
       });
 

@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-dotenv.config();
 import { insertSampleProjects } from '../models/donationProject.js';
 import { insertSamplePayments } from '../models/payment.js';
+
+dotenv.config();
 
 export const connectDB = async () => {
   try {

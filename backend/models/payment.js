@@ -13,19 +13,19 @@ export const insertSamplePayments = async (donationProjectIds) => {
   const samplePayments = [
     {
       donationProjectId: donationProjectIds[0],
-      donorName: "Alice Johnson",
+      donorName: 'Alice Johnson',
       amount: 1.5,
       nftGranted: true,
     },
     {
       donationProjectId: donationProjectIds[1],
-      donorName: "Bob Smith",
+      donorName: 'Bob Smith',
       amount: 2.5,
       nftGranted: false,
     },
     {
       donationProjectId: donationProjectIds[2],
-      donorName: "Charlie Brown",
+      donorName: 'Charlie Brown',
       amount: 1.5,
       nftGranted: true,
     },
@@ -33,8 +33,8 @@ export const insertSamplePayments = async (donationProjectIds) => {
 
   try {
     await Payment.insertMany(samplePayments);
-    console.log("Sample payments inserted successfully.");
+    console.log('Sample payments inserted successfully.');
   } catch (error) {
-    console.error("Error inserting sample payments:", error);
+    console.error('Error inserting sample payments:', error);
   }
 };
