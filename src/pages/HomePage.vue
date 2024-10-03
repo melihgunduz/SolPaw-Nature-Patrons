@@ -8,24 +8,28 @@ const $q = useQuasar();
 const cards = ref([
   {
     id: 1,
-    title: 'Adopt a Rainforest',
-    description: 'Help us protect rainforests, vital to climate regulation and home to countless species.',
-    image: 'https://cdn.pixabay.com/photo/2015/04/23/22/01/tree-736888_1280.jpg',
-    icon: 'fa-solid fa-tree',
+    title: 'Our Responsibility for Climate Change\n',
+    description: 'Just like the sun rising from behind snow-capped mountain peaks, we have faith in a future full of hope. By joining hands together, we can combat climate change, fulfil our responsibility to nature and build a more livable world. This change is in the hands of all of us.',
+    image: '../../public/assets/images/sunrise-over-mountain.jpg',
+    color: 'blue',
+    icon: 'fa-solid fa-temperature-half',
   },
   {
     id: 2,
-    title: 'Save the Whales',
-    description: 'Contribute to efforts to save endangered whale species from poaching and climate threats.',
-    image: 'https://cdn.pixabay.com/photo/2015/04/23/22/01/tree-736888_1280.jpg',
-    icon: 'fa-solid fa-water',
+    title: 'Protecting Greenery is Protecting the Future',
+    description: 'Just like the sun rising behind the tree, we can also plant new hopes at every step. Nature offers us an abundance of beauties; it is a precious duty for all of us to give it the value it deserves. Let\'s step into a greener tomorrow hand in hand with nature.',
+    image: '../../public/assets/images/sunrise-over-trees.jpg',
+    color: 'green',
+    icon: 'fa-solid fa-tree',
+
   },
   {
     id: 3,
     title: 'Protect Coral Reefs',
-    description: 'Support coral reef restoration projects to save underwater ecosystems.',
-    image: 'https://cdn.pixabay.com/photo/2015/04/23/22/01/tree-736888_1280.jpg',
-    icon: 'fa-solid fa-fish',
+    description: 'By embracing animals with love, we can offer them a better future. The way to protect animals is to understand them, respond to their needs and share life together. We can all build a better life hand in hand with our friends on this planet.',
+    image: '../../public/assets/images/love-animals.jpg',
+    color: 'purple',
+    icon: 'fa-solid fa-paw',
   },
 ]);
 
@@ -58,9 +62,11 @@ onUnmounted(() => {
   <q-page>
     <section class="hero-banner q-ma-md rounded-borders">
       <div class="hero-image">
-        <div class="hero-content">
-          <h1 class="text-h2 text-white q-mb-md">Help Protect Our Planet and Wildlife!</h1>
-          <p class="text-h5 text-white q-mb-lg">Your donation makes a difference. Support our cause today.</p>
+        <div class="hero-content text-secondary">
+          <h1 :class="[$q.screen.lt.md ? 'text-h4' : 'text-h2', 'q-mb-md']">Help Protect Our Planet and
+            Wildlife!</h1>
+          <p :class="[$q.screen.lt.md ? 'text-body2' : 'text-h5', 'q-mb-lg']">Touch nature and animals with love, donate
+            and contribute to a sustainable future.</p>
           <q-btn :size="$q.screen.lt.md ? 'md' : 'lg'" :to="{name:'Donate'}" color="primary"
                  icon-right="fa-solid fa-coins"
                  label="Donate Now"
@@ -76,23 +82,21 @@ onUnmounted(() => {
     <section class="q-ma-md ">
       <div class="container">
         <div id="our-initatives" class="text-h4 text-center q-mb-md">Our Initiatives</div>
-        <div class="row q-col-gutter-lg">
+        <div class="row q-col-gutter-md">
           <div v-for="card in cards" :key="card.id" class="col-12 col-md-4">
-            <q-card v-scroll-fire="handleScrollFire" class="full-height">
-              <q-img :src="card.image" style="height: 200px">
-                <div class="absolute-bottom text-subtitle2 text-center" style="background-color: rgba(0, 0, 0, 0.3);">
+            <q-card v-scroll-fire="handleScrollFire" class="full-height column justify-between">
+              <q-img :src="card.image" style="height: 340px" />
+              <q-card-section class="text-center">
+                <div class="text-h6">
+                  <q-icon :color="card.color" :name="card.icon" size="sm" />
                   {{ card.title }}
                 </div>
-              </q-img>
-              <q-card-section>
-                <div class="text-h6 q-mb-xs">
-                  <q-icon :name="card.icon" size="md" />
-                  {{ card.title }}
-                </div>
+              </q-card-section>
+              <q-card-section class="text-center">
                 <p class="text-body2">{{ card.description }}</p>
               </q-card-section>
-              <q-card-actions align="right" class="q-pa-md">
-                <q-btn color="primary" flat label="Learn More" to="/donate" />
+              <q-card-actions align="right">
+                <q-btn :color="card.color" :to="{name: 'Donate'}" flat label="Learn More" />
               </q-card-actions>
             </q-card>
           </div>
