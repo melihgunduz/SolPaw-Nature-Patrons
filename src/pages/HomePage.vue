@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref } from 'vue';
-import { useQuasar } from 'quasar';
+import { scroll, useQuasar } from 'quasar';
 import InfoCarousel from 'components/InfoCarousel.vue';
 
 const $q = useQuasar();
@@ -48,6 +48,12 @@ const handleScrollFire = (el: Element) => {
     el.classList.add('animate-pop');
   }
 };
+const scrollTo = (sectionId: string) => {
+  const el = document.getElementById(sectionId);
+  if (el) {
+    scroll.setVerticalScrollPosition(window, el.offsetTop, 500);
+  }
+};
 
 onMounted(() => {
   window.addEventListener('scroll', checkScroll);
@@ -67,17 +73,28 @@ onUnmounted(() => {
             Wildlife!</h1>
           <p :class="[$q.screen.lt.md ? 'text-body2' : 'text-h5', 'q-mb-lg']">Touch nature and animals with love, donate
             and contribute to a sustainable future.</p>
-          <q-btn :size="$q.screen.lt.md ? 'md' : 'lg'" :to="{name:'Donate'}" color="primary"
-                 icon-right="fa-solid fa-coins"
-                 label="Donate Now"
-                 no-caps />
+          <div :class="[$q.screen.lt.sm ? 'column' : 'row justify-around']">
+            <q-btn :class="[$q.screen.lt.sm ? 'q-mb-md' : '']" :size="$q.screen.lt.md ? 'md' : 'lg'"
+                   :to="{name:'Donate'}"
+                   color="primary"
+                   icon-right="fa-solid fa-coins"
+                   label="Donate Now"
+                   no-caps
+                   rounded />
+            <q-btn :size="$q.screen.lt.md ? 'md' : 'lg'" color="primary"
+                   icon-right="fa-solid fa-magnifying-glass"
+                   label="Explore more"
+                   no-caps
+                   rounded
+                   @click="scrollTo('projects')" />
+          </div>
         </div>
       </div>
     </section>
     <InfoCarousel />
 
     <!-- Item Cards Section -->
-    <section class="q-ma-md ">
+    <section id="projects" class="q-ma-md">
       <div class="container">
         <div id="our-initatives" class="text-h4 text-center q-mb-md">Our Initiatives</div>
         <div class="row q-col-gutter-md">
