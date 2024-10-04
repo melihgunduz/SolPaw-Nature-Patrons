@@ -67,8 +67,8 @@ onUnmounted(() => {
 <template>
   <q-page padding>
     <section class="hero-banner q-mb-lg">
-      <div class="hero-image">
-        <div class="hero-content text-secondary">
+      <div>
+        <div class="hero-content">
           <h1 :class="[$q.screen.lt.md ? 'text-h4' : 'text-h2', 'q-mb-md']">Help Protect Our Planet and
             Wildlife!</h1>
           <p :class="[$q.screen.lt.md ? 'text-body2' : 'text-h5', 'q-mb-lg']">Touch nature and animals with love, donate
@@ -158,6 +158,7 @@ onUnmounted(() => {
   transform: translate(-50%, -50%);
   text-align: center;
   z-index: 1;
+  color: white;
 }
 
 @keyframes breathe-out {
