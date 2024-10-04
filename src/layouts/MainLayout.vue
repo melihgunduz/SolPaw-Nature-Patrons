@@ -16,7 +16,7 @@ defineOptions({
 
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header :class=" !$q.dark.isActive ? 'gradient-header-light': 'gradient-header-dark'" reveal>
+    <q-header reveal style="background-color: #2F4F4F">
       <q-toolbar>
         <q-toolbar-title>
           <div>
@@ -73,13 +73,5 @@ defineOptions({
 
 <style lang="scss" scoped>
 
-.gradient-header-light {
-  background-color: $primary;
-  background-image: linear-gradient($primary, white);
-}
-
-.gradient-header-dark {
-  background-color: $dark-page;
-}
 
 </style>

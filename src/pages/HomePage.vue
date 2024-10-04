@@ -59,8 +59,8 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <q-page>
-    <section class="hero-banner q-ma-md rounded-borders">
+  <q-page padding>
+    <section class="hero-banner q-mb-lg">
       <div class="hero-image">
         <div class="hero-content text-secondary">
           <h1 :class="[$q.screen.lt.md ? 'text-h4' : 'text-h2', 'q-mb-md']">Help Protect Our Planet and
@@ -74,9 +74,7 @@ onUnmounted(() => {
         </div>
       </div>
     </section>
-    <div class="text-h4 text-center">Our Initiatives</div>
-
-    <InfoCarousel class="q-ma-md" />
+    <InfoCarousel />
 
     <!-- Item Cards Section -->
     <section class="q-ma-md ">
@@ -120,7 +118,7 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .hero-banner {
   position: relative;
-  height: 60vh; // Ekranın %60'ı kadar yükseklik
+  height: calc(100vh - 85px - 48px); // Ekranın %60'ı kadar yükseklik
   overflow: hidden;
 }
 

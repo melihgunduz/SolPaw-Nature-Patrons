@@ -34,8 +34,10 @@ const slides = [
       arrows
       control-color="accent"
       control-type="regular"
-      height="500px"
+      height="60vh"
       padding
+      s
+      style="width: 100vw"
       swipeable
       transition-next="scale"
       transition-prev="scale"
@@ -53,11 +55,4 @@ const slides = [
 
 
 <style lang="scss" scoped>
-.q-img {
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-}
 </style>
