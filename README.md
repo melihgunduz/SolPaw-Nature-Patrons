@@ -9,11 +9,15 @@ yarn
 npm install
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Start the app and server in development mode (hot-code reloading, error reporting, etc.)
 ```bash
+cd backend/config
+node server.js
+```
+open new terminal and run
+``` bask
 quasar dev
 ```
-
 
 ### Lint the files
 ```bash
