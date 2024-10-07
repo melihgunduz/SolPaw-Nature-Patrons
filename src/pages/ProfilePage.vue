@@ -5,7 +5,7 @@ import { useWallet } from 'solana-wallets-vue';
 import { PublicKey } from '@solana/web3.js';
 
 const $q = useQuasar();
-const { publicKey } = useWallet();
+const { publicKey, wallet } = useWallet();
 
 
 const isAdmin = computed(() => publicKey.value?.toBase58() === new PublicKey('D4fQPLmmSKESQPB9LjUru2S4QQccUHYdN5G5bGWTh2Uy').toBase58());
@@ -18,6 +18,10 @@ const collectionInfo = ref({
   startDate: '',
   endDate: '',
 });
+
+function createCollection() {
+  console.log(wallet.value?.adapter);
+}
 
 
 </script>
@@ -43,7 +47,8 @@ const collectionInfo = ref({
                      type="text" />
           </q-card-section>
           <q-card-actions align="center" class="q-px-md">
-            <q-btn class="full-width" color="green" icon="create" label="Craete collection" no-caps />
+            <q-btn class="full-width" color="green" icon="create" label="Craete collection" no-caps
+                   @click="createCollection" />
           </q-card-actions>
         </q-card>
       </div>
