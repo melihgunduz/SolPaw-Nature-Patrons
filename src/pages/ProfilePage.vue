@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useQuasar } from 'quasar';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useWallet } from 'solana-wallets-vue';
 import { PublicKey } from '@solana/web3.js';
 
@@ -10,12 +10,44 @@ const { publicKey } = useWallet();
 
 const isAdmin = computed(() => publicKey.value?.toBase58() === new PublicKey('D4fQPLmmSKESQPB9LjUru2S4QQccUHYdN5G5bGWTh2Uy').toBase58());
 
+const collectionInfo = ref({
+  title: '',
+  description: '',
+  targetAmount: 0,
+  totalCollected: 0,
+  startDate: '',
+  endDate: '',
+});
+
 
 </script>
 
 <template>
   <q-page v-if="isAdmin">
-    <h1>admin page</h1>
+    <div :class="[$q.screen.lt.sm ? 'column' : 'row justify-center', 'q-mt-md']">
+      <div :class="[$q.screen.lt.sm ? 'q-mx-md' : '']">
+        <q-card style="max-width: 300px">
+          <q-card-section>
+            <div class="text-h5">New collection</div>
+          </q-card-section>
+          <q-card-section class="q-py-none" style="max-width: 300px">
+            <q-input v-model="collectionInfo.title" class="q-mb-sm" dense label="Name" outlined
+                     type="text" />
+            <q-input v-model="collectionInfo.description" class="q-mb-sm" dense label="Description" outlined
+                     type="text" />
+            <q-input v-model="collectionInfo.targetAmount" class="q-mb-sm" dense label="Target amount" outlined
+                     type="number" />
+            <q-input v-model="collectionInfo.startDate" class="q-mb-sm" dense label="Start date" outlined
+                     type="text" />
+            <q-input v-model="collectionInfo.endDate" dense label="End date" outlined
+                     type="text" />
+          </q-card-section>
+          <q-card-actions align="center" class="q-px-md">
+            <q-btn class="full-width" color="green" icon="create" label="Craete collection" no-caps />
+          </q-card-actions>
+        </q-card>
+      </div>
+    </div>
     <div :class="[$q.screen.lt.sm ? 'column' : 'row justify-around', 'q-mt-md']">
       <div :class="[$q.screen.lt.sm ? 'q-mx-md' : 'column col-4']">
         <q-card class="full-height">
