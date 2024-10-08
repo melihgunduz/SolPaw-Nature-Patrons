@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 import { useWallet } from 'solana-wallets-vue';
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { useQuasar } from 'quasar';
+import axios from 'axios';
 
 // Used for client side donor type
 type RecentDonation = {
@@ -22,7 +23,7 @@ type DbDonation = {
   nftGranted: boolean,
 }
 
-const { connected } = useWallet();
+const { connected, publicKey } = useWallet();
 const $q = useQuasar();
 
 const donationAmount = ref('');
@@ -31,6 +32,21 @@ const numberOfDonors = ref(78);
 const goal = ref(2000);
 const progress = ref(totalRaised.value / goal.value);
 const recentDonations = ref<RecentDonation[]>([]);
+
+const tokenErrors = ref({
+  collectionName: '',
+});
+
+type CollectionType = {
+  collectionAddress: string,
+  collectionName: string,
+  creatorName: string,
+  owner: string
+}
+
+const nftCollections = ref<CollectionType[]>([]);
+const options = ref<CollectionType[]>([]);
+const selectedCollection = ref<CollectionType | null>(null);
 
 
 onMounted(() => {
@@ -86,7 +102,7 @@ const postPaymentToAPI = async (amount: number, donorName: string) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to send payment');
+      new Error('Failed to send payment');
     }
 
     const result = await response.json();
@@ -123,6 +139,16 @@ const makeDonation = async () => {
     return;
   }
 
+  if (!validateToken()) {
+    $q.notify({
+      message: 'Select collection',
+      color: 'red',
+      position: 'top',
+      timeout: 3000,
+    });
+    return;
+  }
+
   const transaction = new Transaction().add(
     SystemProgram.transfer({
       fromPubkey: publicKey.value,
@@ -132,35 +158,91 @@ const makeDonation = async () => {
   );
 
   try {
-    const signature = await sendTransaction(transaction, connection);
+    const signature = await sendTransaction(transaction, connection).then(async () => {
+      createTokenInCollection();
+      totalRaised.value += Number(donationAmount.value);
+      numberOfDonors.value += 1;
+      progress.value = totalRaised.value / goal.value;
+
+      const name = publicKey.value ? publicKey.value.toString() : 'Anonymous';
+
+      recentDonations.value.unshift({
+        id: new Date().getTime().toString(),
+        name: name,
+        amount: Number(donationAmount.value),
+        date: new Date().toISOString().split('T')[0],
+        nftGranted: true,
+      });
+
+      // Post payment to api
+      await postPaymentToAPI(Number(donationAmount.value), name);
+
+      donationAmount.value = '';
+    });
     console.log('Transaction signature:', signature);
   } catch (e: unknown) {
     console.error('Error during transaction:', e);
     return;
   }
+};
 
-  totalRaised.value += Number(donationAmount.value);
-  numberOfDonors.value += 1;
-  progress.value = totalRaised.value / goal.value;
+function getNftCollections() {
+  axios.get('http://localhost:5001/api/nftCollections/collections')
+    .then((val) => nftCollections.value = val.data).catch((err) => console.log(err));
+}
 
-  const name = publicKey.value ? publicKey.value.toString() : 'Anonymous';
-  recentDonations.value.unshift({
-    id: new Date().getTime().toString(),
-    name: name,
-    amount: Number(donationAmount.value),
-    date: new Date().toISOString().split('T')[0],
-    nftGranted: false,
-  });
 
-  // Check if donation is 0.01 SOL or more
-  if (Number(donationAmount.value) >= 0.01) {
+const validateToken = () => {
+  tokenErrors.value = {
+    collectionName: selectedCollection.value?.collectionName ? '' : 'Collection name is required',
+  };
 
-    console.log(donationAmount.value, Number(donationAmount.value), name);
-    await postPaymentToAPI(Number(donationAmount.value), name);
+  return !Object.values(tokenErrors.value).some(error => error);
+};
+
+
+function createTokenInCollection() {
+  if (validateToken()) {
+    axios.post('http://localhost:5001/api/tokens/create', {
+      collectionNftAddress: selectedCollection.value?.collectionAddress,
+      tokenName: `SP ${selectedCollection.value?.collectionName}`,
+      tokenSymbol: 'SPW',
+      tokenDesc: 'Thank you for your helps to make world great again.',
+      customerPubKey: publicKey.value,
+    }).then((val) => console.log(val)).catch((err) => console.log(err));
+  } else {
+    $q.notify({
+      message: 'Fill empty token inputs',
+      color: 'red',
+      position: 'top',
+      timeout: 2000,
+    });
+  }
+}
+
+function collectionFilterFn(val: string, update: (fn: () => void) => void) {
+  if (val === '') {
+    update(() => {
+      options.value = nftCollections.value;
+    });
+    return;
   }
 
-  donationAmount.value = '';
-};
+  update(() => {
+    const needle = val.toLowerCase();
+    options.value = nftCollections.value.filter(v =>
+      v.collectionName.toLowerCase().includes(needle),
+    );
+  });
+}
+
+function collectionsFocusFn() {
+  if (nftCollections.value.length > 0) {
+    return;
+  } else {
+    getNftCollections();
+  }
+}
 
 
 </script>
@@ -194,6 +276,24 @@ const makeDonation = async () => {
           <q-card-section>
             <div class="text-h6">Make a Donation</div>
             <q-input v-model="donationAmount" class="q-mt-md" label="Amount (SOL)" type="number" @focus="clearInput" />
+            <q-select
+              v-model="selectedCollection"
+              :options="options"
+              :rules="[val => !!val || 'Collection is required']"
+              clearable
+              input-debounce="0"
+              label="Select NFT Collection"
+              map-options
+              option-label="collectionName"
+              option-value="collectionAddress"
+              use-input
+              @filter="collectionFilterFn"
+              @focus="collectionsFocusFn"
+            >
+              <template v-slot:prepend>
+                <q-icon name="search" />
+              </template>
+            </q-select>
           </q-card-section>
           <q-card-actions>
             <q-btn :disable="Number(donationAmount) <= 0 || !connected" class="full-width q-mt-sm" color="primary"

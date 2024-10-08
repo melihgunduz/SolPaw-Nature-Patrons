@@ -21,7 +21,7 @@ const connection = new Connection(clusterApiUrl('devnet'));
 // See https://github.com/solana-developers/helpers?tab=readme-ov-file#get-a-keypair-from-a-keypair-file
 
 //https://docs.solanalabs.com/cli/wallets/file-system follow this steps to create local wallet
-const user = await getKeypairFromFile('~/my-solana-wallet/my-keypair.json');
+const user = await getKeypairFromFile('~/my-solana-wallet/my-keypair.json'); // location of your wallet keypair
 
 
 const umi = createUmi(connection);
