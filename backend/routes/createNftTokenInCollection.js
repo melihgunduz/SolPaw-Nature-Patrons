@@ -11,7 +11,7 @@ router.post('/create', async (req, res) => {
 
 
   try {
-    if (!pubKey) {
+    if (!customerPubKey) {
       return res.status(400).json({ error: 'Required fields are missing' });
     }
     await _createNFT(collectionNftAddress, tokenName, tokenSymbol, tokenDesc, customerPubKey);

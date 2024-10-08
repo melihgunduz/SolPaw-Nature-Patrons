@@ -8,6 +8,20 @@ import axios from 'axios';
 const $q = useQuasar();
 const { publicKey } = useWallet();
 
+// Add your public key to be admin and create collections
+const adminWallets = ['2JzZBbMECNE2wuEjph1QjqoaCGJm6gJWYrCEpVSKBAkm', 'D4fQPLmmSKESQPB9LjUru2S4QQccUHYdN5G5bGWTh2Uy'];
+// const isAdmin = computed(() => publicKey.value?.toBase58() === new PublicKey('D4fQPLmmSKESQPB9LjUru2S4QQccUHYdN5G5bGWTh2Uy').toBase58());
+
+// Convert adminWallets to PublicKey instances for comparison
+const adminPublicKeys = adminWallets.map(wallet => new PublicKey(wallet));
+
+const isAdmin = computed(() => {
+  if (!publicKey.value) return false; // Handle case where publicKey is not available
+  return adminPublicKeys.some(adminKey =>
+    publicKey.value?.toBase58() === adminKey.toBase58(),
+  );
+});
+
 type CollectionType = {
   collectionAddress: string,
   collectionName: string,
@@ -15,7 +29,9 @@ type CollectionType = {
   owner: string
 }
 
-const isAdmin = computed(() => publicKey.value?.toBase58() === new PublicKey('D4fQPLmmSKESQPB9LjUru2S4QQccUHYdN5G5bGWTh2Uy').toBase58());
+const nftCollections = ref<CollectionType[]>([]);
+const options = ref<CollectionType[]>([]);
+const selectedCollection = ref<CollectionType | null>(null);
 
 const collectionInfo = ref({
   title: '',
@@ -26,8 +42,12 @@ const collectionInfo = ref({
   endDate: '',
 });
 
+const tokenInfo = ref({
+  title: '',
+  description: '',
+});
 
-const errors = ref({
+const collectionErrors = ref({
   title: '',
   description: '',
   targetAmount: '',
@@ -35,8 +55,14 @@ const errors = ref({
   endDate: '',
 });
 
-const validate = () => {
-  errors.value = {
+const tokenErrors = ref({
+  title: '',
+  description: '',
+  collectionName: '',
+});
+
+const validateCollection = () => {
+  collectionErrors.value = {
     title: collectionInfo.value.title ? '' : 'Name is required',
     description: collectionInfo.value.description ? '' : 'Description is required',
     targetAmount: collectionInfo.value.targetAmount > 0 ? '' : 'Target amount must be greater than 0',
@@ -44,12 +70,22 @@ const validate = () => {
     endDate: collectionInfo.value.endDate ? '' : 'End date is required',
   };
 
-  return !Object.values(errors.value).some(error => error);
+  return !Object.values(collectionErrors.value).some(error => error);
+};
+
+const validateToken = () => {
+  tokenErrors.value = {
+    title: tokenInfo.value.title ? '' : 'Name is required',
+    description: tokenInfo.value.description ? '' : 'Description is required',
+    collectionName: selectedCollection.value?.collectionName ? '' : 'Collection name is required',
+  };
+
+  return !Object.values(tokenErrors.value).some(error => error);
 };
 
 
 async function createCollection() {
-  if (validate()) {
+  if (validateCollection()) {
     axios.post('http://localhost:5001/api/nftCollections/create', {
       pubKey: publicKey.value,
       collectionName: collectionInfo.value.title,
@@ -66,21 +102,13 @@ async function createCollection() {
   }
 }
 
-// function createTokenInCollection(_collectionNftAddress: string, _tokenName: string, _tokenSymbol: string, _tokenDesc: string, _customerPubKey: string) {
-//   axios.post('http://localhost:5001/api/tokens/create', {
-//     collectionNftAddress: _collectionNftAddress,
-//     tokenName: _tokenName,
-//     tokenSymbol: _tokenSymbol,
-//     tokenDesc: _tokenDesc,
-//     customerPubKey: _customerPubKey ? _customerPubKey : publicKey.value,
-//   }).then((val) => console.log(val)).catch((err) => console.log(err));
-// }
+function getNftCollections() {
+  axios.get('http://localhost:5001/api/nftCollections/collections')
+    .then((val) => nftCollections.value = val.data).catch((err) => console.log(err));
+}
 
-const nftCollections = ref<CollectionType[]>([]);
-const options = ref<CollectionType[]>([]);
-const model = ref<CollectionType | null>(null);
 
-function filterFn(val: string, update: (fn: () => void) => void) {
+function collectionFilterFn(val: string, update: (fn: () => void) => void) {
   if (val === '') {
     update(() => {
       options.value = nftCollections.value;
@@ -96,7 +124,7 @@ function filterFn(val: string, update: (fn: () => void) => void) {
   });
 }
 
-function focusFn() {
+function collectionsFocusFn() {
   if (nftCollections.value.length > 0) {
     return;
   } else {
@@ -104,9 +132,25 @@ function focusFn() {
   }
 }
 
-function getNftCollections() {
-  axios.get('http://localhost:5001/api/nftCollections/collections')
-    .then((val) => nftCollections.value = val.data).catch((err) => console.log(err));
+function createTokenInCollection() {
+  console.log(selectedCollection.value);
+  if (validateToken()) {
+    axios.post('http://localhost:5001/api/tokens/create', {
+      collectionNftAddress: selectedCollection.value?.collectionAddress,
+      tokenName: tokenInfo.value.title,
+      tokenSymbol: 'TST',
+      tokenDesc: 'lorem',
+      customerPubKey: publicKey.value,
+    }).then((val) => console.log(val)).catch((err) => console.log(err));
+  } else {
+    $q.notify({
+      message: 'Fill empty token inputs',
+      color: 'red',
+      position: 'top',
+      timeout: 2000,
+    });
+  }
+
 }
 
 
@@ -164,17 +208,19 @@ function getNftCollections() {
           </q-card-section>
           <q-card-section horizontal>
             <q-card-section class="q-py-none" style="max-width: 300px">
-              <q-input v-model="collectionInfo.title" class="q-mb-sm" dense label="Name" outlined
+              <q-input v-model="tokenInfo.title" :rules="[val => !!val || 'Token name is required']"
+                       class="q-mb-sm" dense hide-bottom-space
+                       label="Name" outlined type="text" />
+              <q-input v-model="tokenInfo.description" :rules="[val => !!val || 'Token description is required']"
+                       class="q-mb-sm" dense hide-bottom-space label="Description"
+                       outlined
                        type="text" />
-              <q-input v-model="collectionInfo.description" class="q-mb-sm" dense label="Description" outlined
-                       type="text" />
-              <q-input v-model="collectionInfo.targetAmount" class="q-mb-sm" dense label="Target amount" outlined
-                       type="number" />
             </q-card-section>
             <q-card-section class="q-py-none" style="max-width: 300px">
               <q-select
-                v-model="model"
+                v-model="selectedCollection"
                 :options="options"
+                :rules="[val => !!val || 'Collection is required']"
                 clearable
                 input-debounce="0"
                 label="Select NFT Collection"
@@ -182,8 +228,8 @@ function getNftCollections() {
                 option-label="collectionName"
                 option-value="collectionAddress"
                 use-input
-                @filter="filterFn"
-                @focus="focusFn"
+                @filter="collectionFilterFn"
+                @focus="collectionsFocusFn"
               >
                 <template v-slot:prepend>
                   <q-icon name="search" />
@@ -192,7 +238,8 @@ function getNftCollections() {
             </q-card-section>
           </q-card-section>
           <q-card-actions align="center" class="q-pa-md">
-            <q-btn class="full-width" color="green" icon="create" label="Create collection" no-caps
+            <q-btn class="full-width" color="green" icon="create" label="Create token" no-caps
+                   @click="createTokenInCollection"
             />
           </q-card-actions>
         </q-card>
