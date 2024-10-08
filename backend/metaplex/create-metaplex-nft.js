@@ -21,8 +21,7 @@ const connection = new Connection(clusterApiUrl('devnet'));
 // assumes that the keypair is already generated using `solana-keygen new`
 
 //https://docs.solanalabs.com/cli/wallets/file-system follow this steps to create local wallet
-
-const user = await getKeypairFromFile('~/my-solana-wallet/my-keypair.json');
+const user = await getKeypairFromFile('~/my-solana-wallet/my-keypair.json'); // location of your wallet keypair
 
 const umi = createUmi(connection);
 
@@ -34,16 +33,6 @@ umi
   .use(keypairIdentity(umiKeypair))
   .use(mplTokenMetadata())
   .use(irysUploader());
-
-
-// example data and metadata for our NFT
-// const nftData = {
-//   name: 'My NFT',
-//   symbol: 'MN',
-//   description: 'My NFT Description',
-//   sellerFeeBasisPoints: 0,
-//   imageFile: 'nft.png',
-// };
 
 
 const NFTImagePath = path.resolve(`${import.meta.dirname}/images`, 'nft.png');
@@ -58,7 +47,6 @@ const [image] = await umi.uploader.upload([file]);
 // console.log('image uri:', image);
 
 // upload offchain json using irys and get metadata uri
-
 export async function _createNFT(_collectionNftAddress, _tokenName, _tokenSymbol, _tokenDesc, _customerPubKey) {
 
   const uri = await umi.uploader.uploadJson({
