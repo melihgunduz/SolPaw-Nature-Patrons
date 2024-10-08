@@ -3,8 +3,8 @@ import { Collection } from '../models/collection.js'; // Import your Collection 
 
 const router = express.Router();
 
-// GET /api/donations/recent
-router.get('/nftCollections', async (req, res) => {
+// GET /api/nftCollections/collections
+router.get('/collections', async (req, res) => {
   try {
     const collections = await Collection.find()
       .sort({ createdAt: -1 }) // Sort by date in descending order

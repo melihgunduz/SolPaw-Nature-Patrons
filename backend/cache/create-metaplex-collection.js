@@ -1,9 +1,4 @@
-import {
-  createNft,
-  findMetadataPda,
-  mplTokenMetadata,
-  verifyCollectionV1,
-} from '@metaplex-foundation/mpl-token-metadata';
+import { createNft, mplTokenMetadata } from '@metaplex-foundation/mpl-token-metadata';
 import { createGenericFile, generateSigner, keypairIdentity, percentAmount } from '@metaplex-foundation/umi';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 import { irysUploader } from '@metaplex-foundation/umi-uploader-irys';
@@ -11,7 +6,7 @@ import { getKeypairFromFile } from '@solana-developers/helpers';
 import { clusterApiUrl, Connection } from '@solana/web3.js';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { insertCollection } from '../models/collection.js';
+import { insertCollection } from 'app/backend/models/collection.js';
 
 
 // create a new connection to Solana's devnet cluster
@@ -37,8 +32,8 @@ umi
   .use(irysUploader());
 
 
-export async function _createCollection(_tokenOwner, _collectionName, _symbol, _description) {
-  const collectionImagePath = path.resolve(`${import.meta.dirname}/images`, 'collection.png');
+export async function _createCollection(_tokenOwner, _name, _symbol, _description) {
+  const collectionImagePath = path.resolve(`${__dirname}/images`, 'collection.png');
 
   const buffer = await fs.readFile(collectionImagePath);
   const file = createGenericFile(buffer, collectionImagePath, {
@@ -48,9 +43,8 @@ export async function _createCollection(_tokenOwner, _collectionName, _symbol, _
   // console.log('image uri:', image);
 
 // upload offchain json to Arweave using irys
-  console.log('json uploading');
   const uri = await umi.uploader.uploadJson({
-    name: _collectionName,
+    name: _name,
     symbol: _symbol,
     description: _description,
     image,
@@ -59,43 +53,24 @@ export async function _createCollection(_tokenOwner, _collectionName, _symbol, _
 
 
 // generate mint keypair
-  // equals to collection address
-  // TODO: Token owner will be used in transaction to mint for user
-  // TODO: NFT will be minted for users in collection
   const collectionMint = generateSigner(umi);
-  console.log('tx sent');
-
 
 // create and mint NFT
   await createNft(umi, {
-    mint: collectionMint, // collection address
-    name: _collectionName,
-    description: _description,
-    symbol: _symbol,
+    mint: collectionMint,
+    name: _name,
     uri,
-    tokenOwner: _tokenOwner,
     updateAuthority: umi.identity.publicKey,
     sellerFeeBasisPoints: percentAmount(0),
     isCollection: true,
+    tokenOwner: _tokenOwner,
+    payer: _tokenOwner,
   }).sendAndConfirm(umi, { send: { commitment: 'finalized' } })
     .then(async () => {
-      await insertCollection(_tokenOwner, _collectionName, umiKeypair.publicKey, collectionMint.publicKey);
-      console.log('verifying collection');
-      const metadata = findMetadataPda(umi, { mint: collectionMint.publicKey });
-
-      await verifyCollectionV1(umi, {
-        metadata,
-        collectionMint,
-        authority: umi.identity,
-      }).sendAndConfirm(umi);
-      
-      console.log('collection verified');
-
-
+      await insertCollection(_tokenOwner, _name, _tokenOwner, collectionMint.publicKey);
     }).catch((err) => {
       console.error('Error creating collection on-chain: ', err);
     });
-
 
   // const explorerLink = getExplorerLink(
   //   'address',
