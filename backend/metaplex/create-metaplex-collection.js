@@ -60,8 +60,6 @@ export async function _createCollection(_tokenOwner, _collectionName, _symbol, _
 
 // generate mint keypair
   // equals to collection address
-  // TODO: Token owner will be used in transaction to mint for user
-  // TODO: NFT will be minted for users in collection
   const collectionMint = generateSigner(umi);
   console.log('tx sent');
 
@@ -88,7 +86,7 @@ export async function _createCollection(_tokenOwner, _collectionName, _symbol, _
         collectionMint,
         authority: umi.identity,
       }).sendAndConfirm(umi);
-      
+
       console.log('collection verified');
 
 
