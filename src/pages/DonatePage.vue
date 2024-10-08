@@ -205,7 +205,7 @@ function createTokenInCollection() {
   if (validateToken()) {
     axios.post('http://localhost:5001/api/tokens/create', {
       collectionNftAddress: selectedCollection.value?.collectionAddress,
-      tokenName: 'SolPaw',
+      tokenName: `SP ${selectedCollection.value?.collectionName}`,
       tokenSymbol: 'SPW',
       tokenDesc: 'Thank you for your helps to make world great again.',
       customerPubKey: publicKey.value,
