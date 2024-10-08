@@ -29,6 +29,7 @@
     "@quasar/extras": "^1.16.4",
     "@solana/wallet-adapter-wallets": "^0.19.32",
     "@solana/web3.js": "^1.95.3",
+    "axios": "^1.7.7",
     "body-parser": "^1.20.3",
     "buffer": "^6.0.3",
     "cors": "^2.8.5",

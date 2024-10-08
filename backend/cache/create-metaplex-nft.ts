@@ -25,15 +25,6 @@ const connection = new Connection(clusterApiUrl('devnet'));
 
 const user = await getKeypairFromFile('~/my-solana-wallet/my-keypair.json');
 
-console.log('Loaded user:', user.publicKey.toBase58());
-//
-// await airdropIfRequired(
-//   connection,
-//   user.publicKey,
-//   LAMPORTS_PER_SOL,
-//   0.1 * LAMPORTS_PER_SOL,
-// );
-
 const umi = createUmi(connection);
 
 // convert to umi compatible keypair

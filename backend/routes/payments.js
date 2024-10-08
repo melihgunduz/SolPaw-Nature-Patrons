@@ -15,6 +15,7 @@ async function addPayment(donationProjectId, donorName, amount) {
   await DonationProject.findByIdAndUpdate(donationProjectId, { $inc: { totalCollected: amount } });
 }
 
+// /api/payments/donate
 router.post('/donate', async (req, res) => {
   const { donationProjectId, donorName, amount } = req.body;
 
