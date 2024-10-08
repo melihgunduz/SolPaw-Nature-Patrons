@@ -102,7 +102,7 @@ const postPaymentToAPI = async (amount: number, donorName: string) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to send payment');
+      new Error('Failed to send payment');
     }
 
     const result = await response.json();
