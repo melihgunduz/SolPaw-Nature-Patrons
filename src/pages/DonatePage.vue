@@ -375,7 +375,6 @@ function collectionsFocusFn() {
                 {{ donation.date }}
               </q-item-section>
             </q-item>
-
           </q-list>
         </q-card-section>
       </q-card>

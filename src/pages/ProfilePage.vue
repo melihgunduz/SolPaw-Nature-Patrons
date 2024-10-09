@@ -21,7 +21,6 @@ const isAdmin = computed(() => {
   );
 });
 
-
 const collectionInfo = ref({
   title: '',
   description: '',
@@ -39,7 +38,6 @@ const collectionErrors = ref({
   endDate: '',
 });
 
-
 const validateCollection = () => {
   collectionErrors.value = {
     title: collectionInfo.value.title ? '' : 'Name is required',
@@ -51,7 +49,6 @@ const validateCollection = () => {
 
   return !Object.values(collectionErrors.value).some(error => error);
 };
-
 
 async function createCollection() {
   if (validateCollection()) {
@@ -70,7 +67,6 @@ async function createCollection() {
     });
   }
 }
-
 
 </script>
 

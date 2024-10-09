@@ -13,7 +13,6 @@ defineOptions({
 
 </script>
 
-
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header reveal style="background-color: #2F4F4F">
@@ -63,13 +62,11 @@ defineOptions({
       </q-toolbar>
     </q-header>
 
-
     <q-page-container>
       <router-view />
     </q-page-container>
   </q-layout>
 </template>
-
 
 <style lang="scss" scoped>
 

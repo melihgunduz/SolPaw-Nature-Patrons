@@ -13,7 +13,6 @@ import { promises as fs } from 'fs';
 import * as path from 'path';
 import { insertCollection } from '../models/collection.js';
 
-
 // create a new connection to Solana's devnet cluster
 const connection = new Connection(clusterApiUrl('devnet'));
 
@@ -23,9 +22,7 @@ const connection = new Connection(clusterApiUrl('devnet'));
 //https://docs.solanalabs.com/cli/wallets/file-system follow this steps to create local wallet
 const user = await getKeypairFromFile('~/my-solana-wallet/my-keypair.json'); // location of your wallet keypair
 
-
 const umi = createUmi(connection);
-
 
 // convert to umi compatible keypair
 const umiKeypair = umi.eddsa.createKeypairFromSecretKey(user.secretKey);
@@ -45,7 +42,6 @@ export async function _createCollection(_tokenOwner, _collectionName, _symbol, _
     contentType: 'image/png',
   });
   const [image] = await umi.uploader.upload([file]);
-  // console.log('image uri:', image);
 
 // upload offchain json to Arweave using irys
   console.log('json uploading');
@@ -55,14 +51,11 @@ export async function _createCollection(_tokenOwner, _collectionName, _symbol, _
     description: _description,
     image,
   });
-  // console.log('Collection offchain metadata URI:', uri);
-
 
 // generate mint keypair
   // equals to collection address
   const collectionMint = generateSigner(umi);
   console.log('tx sent');
-
 
 // create and mint NFT
   await createNft(umi, {
@@ -89,24 +82,9 @@ export async function _createCollection(_tokenOwner, _collectionName, _symbol, _
 
       console.log('collection verified');
 
-
     }).catch((err) => {
       console.error('Error creating collection on-chain: ', err);
     });
-
-
-  // const explorerLink = getExplorerLink(
-  //   'address',
-  //   collectionMint.publicKey,
-  //   'devnet',
-  // );
-
-
-  // fs.writeFile('collectionAddress.json', JSON.stringify(collectionMint.publicKey)).then(() => {
-  //   console.log(`Collection NFT:  ${explorerLink}`);
-  //   console.log('Collection NFT address is:', collectionMint.publicKey);
-  //   console.log('✅ Finished successfully!');
-  // });
 
 }
 

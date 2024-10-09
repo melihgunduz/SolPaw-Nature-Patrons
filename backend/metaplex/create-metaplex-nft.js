@@ -13,7 +13,6 @@ import { clusterApiUrl, Connection } from '@solana/web3.js';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 
-
 // create a new connection to Solana's devnet cluster
 const connection = new Connection(clusterApiUrl('devnet'));
 
@@ -34,7 +33,6 @@ umi
   .use(mplTokenMetadata())
   .use(irysUploader());
 
-
 const NFTImagePath = path.resolve(`${import.meta.dirname}/images`, 'nft.png');
 
 const buffer = await fs.readFile(NFTImagePath);
@@ -48,14 +46,12 @@ const [image] = await umi.uploader.upload([file]);
 
 // upload offchain json using irys and get metadata uri
 export async function _createNFT(_collectionNftAddress, _tokenName, _tokenSymbol, _tokenDesc, _customerPubKey) {
-
   const uri = await umi.uploader.uploadJson({
     name: _tokenName,
     symbol: _tokenSymbol,
     description: _tokenDesc,
     image,
   });
-// console.log('NFT offchain metadata URI:', uri);
 
 // generate mint keypair
   const mint = generateSigner(umi);
